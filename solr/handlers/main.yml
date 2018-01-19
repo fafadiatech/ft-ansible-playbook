@@ -1,2 +1,7 @@
 ---
 # handlers file for solr
+
+
+-   name: Restart jetty
+    action: shell sudo /etc/init.d/jetty start
+    become: true

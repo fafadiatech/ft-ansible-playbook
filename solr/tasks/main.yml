@@ -1,2 +1,120 @@
 ---
-# tasks file for solr
+
+-   name: Setup and Configure Solr
+    hosts: "{{host_name}}"
+    user: "{{host_name}}"
+    pre_tasks:
+        # -   name: 'Install python2' #from ubuntu 16.0.0 onwards python 2 is absent
+        #     raw: sudo apt-get -y install python-simplejson
+
+        -   name: Find user name of the host
+            become: false
+            shell: "whoami"
+            register: user_name
+
+    vars_files: 
+        - "../vars/main.yml"
+
+    gather_facts: true
+
+    tasks:
+        -   name: Creating Code and Installs folder (1/14)
+            file: 
+                path: "{{ base_dir }}"
+                state: directory
+            with_items:
+                - Code
+                - Installs
+
+
+        -   name: Adding open Jdk repository... (2/14)
+            apt_repository: 
+                repo: '{{ open_jdk_ppa }}' 
+                state: present
+            become: true
+
+
+        -   name: Installing Open JDk...  (3/14)
+            apt: 
+                name: "{{ item }}" 
+                state: installed 
+                force: yes 
+                update_cache: yes 
+                cache_valid_time: 3600
+            when: ansible_os_family == 'Debian'
+            with_items: "{{ packages }}"
+            become: true
+
+        -   name: Making Java directory.. (4/14)
+            file: 
+                path: "{{ item }}" 
+                state: directory
+            with_items: "{{directory_path}}"
+            become: true
+
+        -   name: Creating symbolic link... (5/14)
+            ignore_errors: true
+            action: "{{ link_solr }}"
+            become: true    
+
+        -   name: Downloading solr and extracting it... (6/14)
+            unarchive:
+                src: "{{ solr_url }}"
+                dest: "{{ solr_extract_path }}"
+                remote_src: yes
+            become: true
+
+        -   name: Copying solr file... (7/14)
+            action: "shell {{ solr_copy_command}}"
+            become: true 
+
+        -   name: Copying jetty config on remote... (8/14)
+            copy:
+                src: "{{ jetty_path }}"
+                dest: "{{ remote_jetty_path }}"
+                owner: root
+                group: root
+                mode: 0644
+            become: true
+
+
+        -   name: Creating solr user and granting permissions... (9/14)
+            action: " shell {{ add_solr_user_and_permissions }}"
+            become: true
+            ignore_errors: true
+
+
+        -   name: Changing permissions for solr... (10/14)
+            action: "shell {{ solr_permission }}"
+            become: true
+
+        -   name: Copying jetty file in init.d... (11/14)
+            copy:
+                src: "{{ jetty_initd }}"
+                dest: "/etc/init.d/jetty"
+                owner: root
+                group: root
+                mode: 0644
+            become: true
+
+        -   name: Change mode for jetty init... (12/14)
+            action: shell sudo chmod a+x /etc/init.d/jetty
+            become: true
+
+        -   name: Updating rc.d... (13/14)
+            action: shell sudo update-rc.d jetty defaults
+            become: true
+
+        -   name: Copying start.ini file... (14/14)
+            copy:
+                src: "{{ jetty_startini }}"
+                dest: "/opt/solr/example/"
+                owner: root
+                group: root
+                mode: 0644
+            become: true
+            notify: Restart jetty
+
+    handlers:
+        - include: ../handlers/main.yml
+
