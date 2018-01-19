@@ -4,8 +4,8 @@
     hosts: "{{host_name}}"
     user: "{{host_name}}"
     pre_tasks:
-        -   name: 'Install python2' #from ubuntu 16.0.0 onwards python 2 is absent
-            raw: sudo apt-get -y install python-simplejson
+        # -   name: 'Install python2' #from ubuntu 16.0.0 onwards python 2 is absent
+        #     raw: sudo apt-get -y install python-simplejson
 
         -   name: Find user name of the host
             become: false

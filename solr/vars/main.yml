@@ -12,9 +12,9 @@ directory_path:
     -   /opt/solr
     -   /usr/java
 
-solr_url: http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
+solr_url: http://archive.apache.org/dist/lucene/solr/{{solr_version}}/solr-{{solr_version}}.tgz
 
-solr_file_name: solr-4.10.2
+solr_file_name: "solr-{{solr_version}}"
 
 solr_extract_path: /home/{{ user_name.stdout }}/Installs/
 
