@@ -1,2 +1,40 @@
 ---
 # vars file for solr
+
+vars_file: "../vars/main.yml"
+
+base_dir: /home/{{ user_name.stdout }}/{{ item }} 
+
+packages:
+    -   openjdk-7-jdk
+
+directory_path:
+    -   /opt/solr
+    -   /usr/java
+
+solr_url: https://archive.apache.org/dist/lucene/solr/4.10.1/solr-4.10.1-src.tgz
+
+solr_file_name: solr-4.10.1
+
+solr_extract_path: /home/{{ user_name.stdout }}/Installs/
+
+solr_copy_path: /home/{{ user_name.stdout }}/Installs/{{ solr_file_name }}/solr/*
+
+link_solr : shell sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
+
+open_jdk_ppa: ppa:openjdk-r/ppa
+
+solr_copy_command: sudo cp -r {{ solr_copy_path }} /opt/solr/
+
+jetty_path: ../templates/jetty
+
+remote_jetty_path: /etc/default/
+
+add_solr_user_and_permissions: sudo useradd -d /opt/solr -s /sbin/false solr
+
+solr_permission: sudo chown solr:solr -R /opt/solr
+
+
+jetty_initd: ../templates/jetty_script
+
+jetty_startini: ../templates/start.ini
