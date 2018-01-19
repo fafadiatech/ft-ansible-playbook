@@ -1,0 +1,16 @@
+---
+# handlers file for odoo
+
+-   name: Restart Nginx
+    become: true
+    action: shell sudo service nginx restart
+
+
+-   name: Start Supervisor
+    become_user: odoo
+    command: /opt/odoo/envs/{{ env_name }}/bin/supervisord
+    ignore_errors: true
+
+-   name: Start Odoo
+    become: true
+    command: sudo service odoo start

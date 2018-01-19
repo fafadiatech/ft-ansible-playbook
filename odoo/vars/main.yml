@@ -1,0 +1,140 @@
+---
+
+#vars file for odoo
+
+base_dir: /home/{{ user_name.stdout }}/{{ item }}
+
+create_odoo_user: sudo adduser --system --quiet --shell=/bin/bash --home=/opt/odoo --gecos 'odoo' --group odoo
+
+git_repo: https://github.com/odoo/odoo.git
+
+nginx_dirs:
+    -   sites-enabled
+    -   sites-available
+
+create_log_etc_for_odoo: sudo chown odoo:odoo /opt/odoo/ -R && sudo chown odoo:odoo /var/log/odoo/ -R && cd /opt/odoo/odoo
+
+base_folder:
+    -   Code
+    -   Installs
+    -   Code/odoo
+
+odoo_dirs:
+    -   envs
+    -   envs/
+    -   envs/{{ env_name }}/etc
+    -   logs
+    -   logs/supervisor
+
+copy_odoo_files: cp -r /home/{{ user_name.stdout }}/Code/odoo /opt/odoo/
+
+odoo_log_files:
+    -   odoo-access.log
+    -   odoo-error.log
+
+supervisor_log_files:
+    -   supervisord.log
+    -   supervisord.pid
+
+change_odoo_permissions: sudo chown odoo:odoo /opt/odoo/odoo -R && sudo chown odoo:odoo /var/log/odoo/ -R 
+
+install_npm: sudo npm install -g less less-plugin-clean-css -y && sudo ln -s /usr/bin/nodejs /usr/bin/node
+
+additional_requirements:
+    -   supervisor
+    -   setuptools==33.1.1
+
+download_and_install_wkhtmltopdf: cd /tmp && wget https://downloads.wkhtmltopdf.org/0.12/0.12.2.1/wkhtmltox-0.12.2.1_linux-trusty-amd64.deb && sudo gdebi -n wkhtmltox-0.12.2.1_linux-trusty-amd64.deb && rm wkhtmltox-0.12.2.1_linux-trusty-amd64.deb
+
+create_symbolic_link_for_wkhtml: sudo ln -s /usr/local/bin/wkhtmltopdf /usr/bin/ && sudo ln -s /usr/local/bin/wkhtmltoimage /usr/bin/
+
+download_and_extract_geolite: wget -N http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz && sudo gunzip GeoLiteCity.dat.gz
+
+create_geolite_dir: sudo mkdir /usr/share/GeoIP/
+
+move_geo_files: sudo mv GeoLiteCity.dat /usr/share/GeoIP/
+
+create_postgres_user: sudo su - postgres -c "createuser -s odoo
+
+move_openerp: sudo mv /opt/odoo/.openerp_serverrc /etc/odoo/openerp-server.conf
+
+move_odoo_files: sudo cp /opt/odoo/odoo/debian/init /etc/init.d/odoo && chmod +x /etc/init.d/odoo
+
+create_odoo_symbolic_link:  sudo ln -s /opt/odoo/odoo/odoo.py /usr/bin/odoo.py
+
+update_rcd: sudo update-rc.d -f odoo start 20 2 3 4 5 .
+
+env_name: odoo
+
+python_dependencies:
+    -   python-tz
+    -   python-dev
+    -   python-pip
+    -   python-zsi
+    -   python-dev
+    -   python-pip
+    -   python-lxml
+    -   python-ldap
+    -   python-ldap
+    -   python-mako
+    -   python-mock
+    -   python-xlwt
+    -   python-lxml
+    -   python-yaml
+    -   python-gdata
+    -   python-babel
+    -   python-pydot
+    -   python-jinja2
+    -   python-webdav
+    -   python-psutil
+    -   python-openid
+    -   python-openssl
+    -   python-imaging
+    -   python-vobject
+    -   python-passlib
+    -   python-pybabel
+    -   python-pychart
+    -   python-dateutil
+    -   python-docutils
+    -   python-paramiko
+    -   python-pdftools
+    -   python-werkzeug
+    -   python-libxslt1
+    -   python-psycopg2
+    -   python-pyparsing
+    -   python-decorator
+    -   python-reportlab
+    -   python-vatnumber
+    -   python-unittest2
+    -   python-simplejson
+    -   python-setuptools
+    -   python-feedparser
+    -   python-virtualenv
+    -   python-reportlab-accel
+    -   python-egenix-mxdatetime
+
+buid_dependencies:
+    -   mc
+    -   bzr
+    -   gcc
+    -   npm
+    -   git
+    -   make
+    -   gzip
+    -   gdebi
+    -   nodejs
+    -   lptools
+    -   antiword
+    -   libpq-dev
+    -   node-less
+    -   libssl-dev
+    -   gdebi-core
+    -   postgresql
+    -   zlib1g-dev
+    -   libxml2-dev
+    -   libjpeg-dev
+    -   libldap2-dev
+    -   libsasl2-dev
+    -   libxslt1-dev
+    -   poppler-utils
+    -   build-essential
