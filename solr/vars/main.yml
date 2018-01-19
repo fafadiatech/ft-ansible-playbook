@@ -12,13 +12,13 @@ directory_path:
     -   /opt/solr
     -   /usr/java
 
-solr_url: https://archive.apache.org/dist/lucene/solr/4.10.1/solr-4.10.1-src.tgz
+solr_url: http://archive.apache.org/dist/lucene/solr/4.10.2/solr-4.10.2.tgz
 
-solr_file_name: solr-4.10.1
+solr_file_name: solr-4.10.2
 
 solr_extract_path: /home/{{ user_name.stdout }}/Installs/
 
-solr_copy_path: /home/{{ user_name.stdout }}/Installs/{{ solr_file_name }}/solr/*
+solr_copy_path: /home/{{ user_name.stdout }}/Installs/{{ solr_file_name }}/*
 
 link_solr : shell sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
 
