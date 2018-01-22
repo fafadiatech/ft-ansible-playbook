@@ -1,6 +1,6 @@
-# Ansible script for Solr
+# Ansible script for Odoo
 
-Let's automate the installation of Solr with the help of very simple Ansible script. This playbook will help you to install Solr (any version of your choice) using Jetty
+Let's automate the installation of odoo with the help of very simple Ansible script. This playbook will help you to install Odoo (9.0).
 
 ## Getting Started
 
@@ -86,10 +86,9 @@ nano ~/.ssh/authorized_keys
 
 After all this hustle, we are finally ready to run the play, go to taks directory in the playbook 
 ```
-ansible-playbook -v main.yml --extra-vars "solr_version=4.10.2 host_name=server_name"
+ansible-playbook -v main.yml --extra-vars "odoo_version=9.0 host_name=server_name"
 ```
-The good reason to put extra vars it that we can change the version for Solr 
-and host on the go whenever we want.
+The good reason to put extra vars it that we can change the version for Odoo(below 10) and host on the go whenever we want.
 
 Thats it. Tried and tested on version 9 and 8. For now it wont suppoert 10 as the installation steps are quite different.
 
