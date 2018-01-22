@@ -1,6 +1,6 @@
 # ft-ansible-playbook
 
-This repository contains list of re-usable Ansible playbooks developed at Fafadia Tech. 
+This repository contains list of re-usable [Ansible](https://www.ansible.com/) playbooks developed at Fafadia Tech. 
 
 The main reasons why we've created this repository are:
 
@@ -24,3 +24,7 @@ Right now we're supporting:
 
 1. Jitendra Varma
 1. Yogesh Panchal
+
+## Reference
+
+[This github repo](https://github.com/leucos/ansible-tuto) is a good reference if you're looking for a step-by-step example of using Ansible
