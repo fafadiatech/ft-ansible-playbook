@@ -19,172 +19,171 @@
             shell: "whoami"
             register: user_name
 
-        # -   name: Installing dependencies for Odoo version {{ odoo_version }}.
-        #     apt: 
-        #         name: "{{ item }}"
-        #         state: installed 
-        #         force: yes 
-        #         update_cache: yes
-        #         cache_valid_time: 3600
-        #     when: ansible_os_family == 'Debian'
-        #     with_items: "{{ python_dependencies + buid_dependencies}}"
-        #     become: true
+        -   name: Installing dependencies for Odoo version {{ odoo_version }}.
+            apt: 
+                name: "{{ item }}"
+                state: installed 
+                force: yes 
+                cache_valid_time: 3600
+            when: ansible_os_family == 'Debian'
+            with_items: "{{ python_dependencies + buid_dependencies}}"
+            become: true
 
-        # -   name: Creating Code and Installs folder
-        #     file: 
-        #         path: "{{ base_dir }}"
-        #         state: directory
-        #     with_items: "{{ base_folder }}"
+        -   name: Creating Code and Installs folder
+            file: 
+                path: "{{ base_dir }}"
+                state: directory
+            with_items: "{{ base_folder }}"
 
-        # -   name: Creating Odoo user_name
-        #     ignore_errors: yes
-        #     action: "shell {{ create_odoo_user }}" 
+        -   name: Creating Odoo user_name
+            ignore_errors: yes
+            action: "shell {{ create_odoo_user }}" 
 
-        # -   name: Creating Odoo folder
-        #     file: 
-        #         path: /opt/odoo/{{ item }}
-        #         state: directory
-        #     with_items: "{{ odoo_dirs }}"
+        -   name: Creating Odoo folder
+            file: 
+                path: /opt/odoo/{{ item }}
+                state: directory
+            with_items: "{{ odoo_dirs }}"
 
-        # -   name: Creating Odoo folder
-        #     ignore_errors: yes
-        #     action: shell sudo mkdir /etc/odoo
+        -   name: Creating Odoo folder
+            ignore_errors: yes
+            action: shell sudo mkdir /etc/odoo
 
-        # -   name: Creating Odoo Log folder
-        #     ignore_errors: yes
-        #     action: shell sudo mkdir /var/log/odoo/
+        -   name: Creating Odoo Log folder
+            ignore_errors: yes
+            action: shell sudo mkdir /var/log/odoo/
 
-        # -   name: Go to the Installs folder and execute command
-        #     command: chdir=/opt/odoo/ ls
+        -   name: Go to the Installs folder and execute command
+            command: chdir=/opt/odoo/ ls
 
-        # -   name: Creating log and etc directory for odoo.
-        #     ignore_errors: yes
-        #     action: "shell {{ create_log_etc_for_odoo }}" 
+        -   name: Creating log and etc directory for odoo.
+            ignore_errors: yes
+            action: "shell {{ create_log_etc_for_odoo }}" 
 
-        # -   name: Updating apt packages
-        #     apt: 
-        #         update_cache: yes
+        -   name: Updating apt packages
+            apt: 
+                update_cache: yes
 
-        # -   name: Cloning Odoo repo version-{{ odoo_version }}.
-        #     git:
-        #         repo: '{{ git_repo }}'
-        #         dest: /home/{{ user_name.stdout }}/Code/odoo
-        #         recursive: yes
-        #         version: "{{ odoo_version }}"
-        #         depth: 1
+        -   name: Cloning Odoo repo version-{{ odoo_version }}.
+            git:
+                repo: '{{ git_repo }}'
+                dest: /home/{{ user_name.stdout }}/Code/odoo
+                recursive: yes
+                version: "{{ odoo_version }}"
+                depth: 1
 
-        # -   name: Copying Odoo files
-        #     command: "{{ copy_odoo_files }}"
+        -   name: Copying Odoo files
+            command: "{{ copy_odoo_files }}"
 
-        # -   name: Installing dependencies in the Virtual Environment for Odoo
-        #     pip:
-        #         requirements='/opt/odoo/odoo/requirements.txt'
-        #         virtualenv='/opt/odoo/envs/{{ env_name }}'
+        -   name: Installing dependencies in the Virtual Environment for Odoo
+            pip:
+                requirements='/opt/odoo/odoo/requirements.txt'
+                virtualenv='/opt/odoo/envs/{{ env_name }}'
 
-        # -   name: Installing dependencies in env for deployment use
-        #     pip:
-        #         name: "{{ item }}"
-        #         virtualenv: "/opt/odoo/envs/{{ env_name }}"
-        #     with_items: "{{ additional_requirements }}"
+        -   name: Installing dependencies in env for deployment use
+            pip:
+                name: "{{ item }}"
+                virtualenv: "/opt/odoo/envs/{{ env_name }}"
+            with_items: "{{ additional_requirements }}"
 
-        # -   name: Changing permission for Odoo repo
-        #     action: "shell {{ change_odoo_permissions }}"
+        -   name: Changing permission for Odoo repo
+            action: "shell {{ change_odoo_permissions }}"
 
-        # -   name: Installing npm
-        #     action: "shell {{ install_npm }}"
-        #     ignore_errors: yes
+        -   name: Installing npm
+            action: "shell {{ install_npm }}"
+            ignore_errors: yes
 
-        # -   name: Downloading and Install wkhtmltopdf package and create symbolic link
-        #     action: "shell {{ download_and_install_wkhtmltopdf }}" 
-        #     ignore_errors: yes
+        -   name: Downloading and Install wkhtmltopdf package and create symbolic link
+            action: "shell {{ download_and_install_wkhtmltopdf }}" 
+            ignore_errors: yes
 
-        # -   name: Creating symbolic link for wkhtmltopdf
-        #     action: "shell {{ create_symbolic_link_for_wkhtml }}"
-        #     ignore_errors: yes
+        -   name: Creating symbolic link for wkhtmltopdf
+            action: "shell {{ create_symbolic_link_for_wkhtml }}"
+            ignore_errors: yes
 
-        # -   name: Downloading and Extract Geolite
-        #     action: "shell {{ download_and_extract_geolite }}"
+        -   name: Downloading and Extract Geolite
+            action: "shell {{ download_and_extract_geolite }}"
 
-        # -   name: Creating GeoIp directory
-        #     action: "shell {{ create_geolite_dir }}"
-        #     ignore_errors: yes
+        -   name: Creating GeoIp directory
+            action: "shell {{ create_geolite_dir }}"
+            ignore_errors: yes
 
-        # -   name: Moving Geo files
-        #     action: "shell {{ move_geo_files }}"
-        #     ignore_errors: yes
+        -   name: Moving Geo files
+            action: "shell {{ move_geo_files }}"
+            ignore_errors: yes
 
-        # -   name: Creating postgres user for Odoo
-        #     action: "shell {{ create_postgres_user }}"
-        #     ignore_errors: true
+        -   name: Creating postgres user for Odoo
+            action: "shell {{ create_postgres_user }}"
+            ignore_errors: true
 
-        # -   name: Moving openerp file
-        #     action:  "shell {{ move_openerp }}"
-        #     ignore_errors: true
+        -   name: Moving openerp file
+            action:  "shell {{ move_openerp }}"
+            ignore_errors: true
 
-        # -   name: Moving odoo files
-        #     action: "shell {{ move_odoo_files }}"
-        #     ignore_errors: true
+        -   name: Moving odoo files
+            action: "shell {{ move_odoo_files }}"
+            ignore_errors: true
 
-        # -   name: Creating symbolic link for odoo.py
-        #     action: "shell {{ create_odoo_symbolic_link }}"
-        #     ignore_errors: true
+        -   name: Creating symbolic link for odoo.py
+            action: "shell {{ create_odoo_symbolic_link }}"
+            ignore_errors: true
 
-        # -   name: Updating rc.d
-        #     action: "shell {{ update_rcd }}"
-        #     force: yes 
-        #     notify: Start Odoo
+        -   name: Updating rc.d
+            action: "shell {{ update_rcd }}"
+            force: yes 
+            notify: Start Odoo
 
-        # -   name: Installing Nginx on the Server 
-        #     apt:
-        #         name: nginx 
-        #         # update_cache: yes
-        #     become: true
+        -   name: Installing Nginx on the Server 
+            apt:
+                name: nginx 
+                # update_cache: yes
+            become: true
 
-        # -   name: Copying nginx.conf
-        #     copy: 
-        #         src: "../templates/odoo"
-        #         dest: /etc/nginx/{{ item }}/
-        #         owner: root
-        #         group: root
-        #         mode: 0600
-        #         directory_mode: 0700
-        #         force: yes
-        #     with_items: "{{ nginx_dirs }}"
+        -   name: Copying nginx.conf
+            copy: 
+                src: "../templates/odoo"
+                dest: /etc/nginx/{{ item }}/
+                owner: root
+                group: root
+                mode: 0600
+                directory_mode: 0700
+                force: yes
+            with_items: "{{ nginx_dirs }}"
 
-        # -   name: Removing Nginx Default file for sites-avail and enabled
-        #     file:
-        #         dest: /etc/nginx/{{ item }}/default
-        #         state: absent
-        #         force: yes
-        #     with_items: "{{ nginx_dirs }}"
-        #     notify: Restart Nginx
+        -   name: Removing Nginx Default file for sites-avail and enabled
+            file:
+                dest: /etc/nginx/{{ item }}/default
+                state: absent
+                force: yes
+            with_items: "{{ nginx_dirs }}"
+            notify: Restart Nginx
 
-        # -   name: Creating odoo log files
-        #     file: 
-        #         path: /var/log/nginx/{{ item }}
-        #         state: touch
-        #         owner: root
-        #         group: root
-        #     with_items: "{{ odoo_log_files }}"
+        -   name: Creating odoo log files
+            file: 
+                path: /var/log/nginx/{{ item }}
+                state: touch
+                owner: root
+                group: root
+            with_items: "{{ odoo_log_files }}"
 
-        # -   name: Creating folder for supervisor logs
-        #     file:
-        #         path: /opt/odoo/logs/supervisor/{{ item }}
-        #         state: touch
-        #         owner: odoo
-        #         group: odoo
-        #     with_items: "{{ supervisor_log_files }}"
+        -   name: Creating folder for supervisor logs
+            file:
+                path: /opt/odoo/logs/supervisor/{{ item }}
+                state: touch
+                owner: odoo
+                group: odoo
+            with_items: "{{ supervisor_log_files }}"
 
-        # -   name: Copying supervisor file to the server
-        #     copy:
-        #         src: "../templates/supervisord.conf"
-        #         dest: "/opt/odoo/envs/{{ env_name }}/etc/"
-        #         owner: odoo
-        #         group: odoo
-        #         mode: 0600
-        #         directory_mode: 0700
-        #         force: yes
-        #     notify: Start Supervisor
+        -   name: Copying supervisor file to the server
+            copy:
+                src: "../templates/supervisord.conf"
+                dest: "/opt/odoo/envs/{{ env_name }}/etc/"
+                owner: odoo
+                group: odoo
+                mode: 0600
+                directory_mode: 0700
+                force: yes
+            notify: Start Supervisor
     
         -   name: Changing permission for files in /opt/odoo
             action: shell sudo chown odoo:odoo /opt/odoo/* -R 
@@ -193,6 +192,7 @@
             become: yes
             become_user: postgres
             action: shell createuser -s odoo
+            ignore_errors: true
          
 
     handlers:

@@ -1,38 +1,118 @@
-Role Name
-=========
+# Ansible script for Solr
 
-A brief description of the role goes here.
+Let's automate the installation of Solr with the help of very simple Ansible script. This playbook will help you to install Solr (any version of your choice) using Jetty
 
-Requirements
-------------
+## Getting Started
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Following instructions will help you guide for the necessary steps for installation. Just clone the repo.
 
-Role Variables
---------------
+### Prerequisites
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+You will need to install Ansible in order to run the play. For ubuntu/iOS we will be using pip since it will go with both. You can still install Ansible using the system package.
 
-Dependencies
-------------
+### Installing
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Using pip
 
-Example Playbook
-----------------
+```
+sudo apt-get install python-pip #to install pip 
+```
+The standard that I follow is I create seprate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+So create Installs directory in your home directory. Then in Installs create envs, for pip virtual environments. Then create virtual env with in your env directory with,
+You can read more about [pip](https://pip.pypa.io/en/stable/reference/pip_download/)
+```
+virtualenv ansible #to create env
+pip install ansible #to install latest version of the ansible
+```
+Then just create two files
+```
+sudo mkdir /etc/ansible
+sudo touch /etc/ansible/ansible.cfg
+sudo touch /etc/ansible/hosts
+```
+######  Note: If you are a iOS user then pip is the preferred method.   
+If you prefer not to use pip and want to you system packages then, you can install with, 
+```
+sudo apt-get install ansible 
+```
+###### Note: If you user apt-get to Install Ansible then you will by default have ansible.cfg and hosts file in /etc/ansible/ directory
+Thats it. We are done with the installation part of the Ansible.
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Edit ansible.cfg with the following paramaters
+```
+[defaults]
 
-License
--------
+# some basic default values...
 
-BSD
+inventory      = /etc/ansible/hosts
+remote_tmp     = $HOME/.ansible/tmp
+pattern        = *
+forks          = 5
+poll_interval  = 15
+sudo_user      = root
+ask_sudo_pass = True
+#ask_pass      = True
+transport      = ssh
+remote_port    = 22
 
-Author Information
-------------------
+[ssh_connection]
+ssh_args = -o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s
+```
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Create your own host in hosts file.
+```
+[server_name]
+server_ip or ips
+```
+
+## Creating your own SSH keys
+If you havent created your own private keys create using the following command and select the directories to save it in or skip to stick with deafault. Similarly you need to do on the server if not created.
+```
+ssh-keygen -t rsa
+```
+
+Copy your private key in the .ssh directory ie id_rsa.pub file, if default path is selected then it will be in 
+```
+cat ~/.ssh/id_rsa.pub 
+```
+Paste the same in the your ansible Hosts in authorized_keys, it wont be created by default
+On every host,
+```
+nano ~/.ssh/authorized_keys
+#paste the copied private key in this file.
+```
+## Running the Play
+
+After all this hustle, we are finally ready to run the play, go to taks directory in the playbook 
+```
+ansible-playbook -v main.yml --extra-vars "solr_version=4.10.2 host_name=server_name"
+```
+The good reason to put extra vars it that we can change the version for Solr 
+and host on the go whenever we want.
+
+Thats it. Tried and tested on version 9 and 8. For now it wont suppoert 10 as the installation steps are quite different.
+
+
+## Built With
+
+* [Ansible](https://ansible.com/) - Simple IT automation tool
+
+
+## Contributing
+
+Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+
+
+## Authors
+
+* **Jitendra Varma** - DevOps at  - [Fafadiatech](https://fafadiatech.com/)
+
+
+## License
+
+This project is licensed under the standard MIT License
+
+## Acknowledgments
+
+* Thanks to [Yogesh Panchal](https://github.com/yspanchal) and [Sidharth Shah](https://github.com/sidharthshah) for their support
