@@ -3,7 +3,7 @@
 
 -   name: Configure Odoo
     hosts: "{{ host_name }}"
-    user: "{{ host_name }}"
+    user: "{{ user_name }}"
     become: true
     pre_tasks:
         -   name: 'Install python2' #from ubuntu 16.0.0 onwards python 2 is absent
