@@ -86,7 +86,7 @@ nano ~/.ssh/authorized_keys
 
 After all this hustle, we are finally ready to run the play, go to taks directory in the playbook 
 ```
-ansible-playbook -v main.yml --extra-vars "odoo_version=9.0 host_name=server_name"
+ansible-playbook -v main.yml --extra-vars "odoo_version=9.0 host_name=your_server_name user_name=your_user_name"
 ```
 The good reason to put extra vars it that we can change the version for Odoo(below 10) and host on the go whenever we want.
 
