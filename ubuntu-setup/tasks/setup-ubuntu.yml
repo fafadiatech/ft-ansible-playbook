@@ -1,6 +1,11 @@
 ---
+# this script will install Sublime Text 3, Chrome, Visual Studio Code, Mysql
+# and basic python dependencies. Make sure you edit mysql password in vars.yml
+# before running this script
+# Author: Jitendra A. Varma (https://github.com/jitendravarma)
+# Company: Fafadiatech (www.fafadiatech.com)
 
-- name: Installing basice dependenceis in ubuntu
+- name: Installing basic dependencies in Ubuntu
   hosts: "{{ host_name }}"
   user: "{{ user_name }}"
   sudo: true
@@ -15,19 +20,24 @@
   gather_facts: false
 
   tasks:
+      # set mysql password for questioning
       - name: 1. Set MySQL root password before installing
         debconf: name='mysql-server' question='mysql-server/root_password' value={{ mysql_password }} vtype="password"
 
+      # when prompted set mysql password
       - name: 2. Confirm MySQL root password before installing
         debconf: name='mysql-server' question='mysql-server/root_password_again' value={{ mysql_password }} vtype='password'
 
+      # install these basic dependencies
       - name: 3. Installing dependencies
         apt: name="{{ item }}" state=installed force=yes update_cache=yes cache_valid_time=3600
         with_items: "{{ python_dependencies + build_dependencies}}"
 
+      # make mysql secure by deleting default users
       - name: 4. Deleting anonymous MySQL server user for localhost
         mysql_user: user="" state=absent login_password={{ mysql_password }} login_user=root
 
+      # securing my sql to run locally only
       - name: 5. Securing the MySQL root user
         mysql_user: user="" password={{ mysql_password }} host='{{ item }}' login_password={{ mysql_password }} login_user=root
         with_items:
@@ -35,70 +45,79 @@
           - localhost
           - ::1
 
+      # remove default database
       - name: 6. Removing the MySQL test database
         mysql_db: db=test state=absent login_password={{ mysql_password }} login_user=root
 
+      # create Installs and Code our standard directory
       - name: 8. Creating Code and Installs folder
         file: path=/home/{{ user_name }}/{{ item }} state=directory
+        sudo: false
         with_items:
           - Code
           - Installs
 
-      - name: Does the Google apt file exist?
+      # check if chrome is already installed or nah and register it
+      - name: 9. Does the Google apt file exist?
         command: test -f {{chrome_apt_file}}
         register: google_apt_exists
         ignore_errors: True
 
-      - name: Add Google Chrome key
+      # add chrome keys if not installed
+      - name: 10. Add Google Chrome key
         shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
         when: google_apt_exists.rc == 1
 
-      - name: Add Google Chrome repo
+      - name: 11. Add Google Chrome repo
         copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest={{chrome_apt_file}} owner=root group=root mode=644
         when: google_apt_exists.rc == 1
 
-      - name: Update apt cache
+      - name: 12. Update apt cache
         apt: update_cache=yes
         when: google_apt_exists.rc == 1
 
-      - name: Install Google Chrome
+      - name: 13. Install Google Chrome
         apt: pkg=google-chrome-stable state=installed
 
-      - name: Add sublime key
-        shell: wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
-
-      - name: Add sublime repo
-        copy: content="deb https://download.sublimetext.com/ apt/stable/" dest={{sublime_apt_file}} owner=root group=root mode=644
-
-      - name: Does the Sublime apt file exist?
+      # check if the sublime is installed or nah
+      - name: 16. Does the Sublime apt file exist?
         command: test -f {{sublime_apt_file}}
         register: sublime_apt_exists
         ignore_errors: True
 
-      - name: Update apt cache
+      # add the keys if not present
+      - name: 14. Add sublime key
+        shell: wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+        when: sublime_apt_exists.rc == 1
+
+      - name: 15. Add sublime repo
+        copy: content="deb https://download.sublimetext.com/ apt/stable/" dest={{sublime_apt_file}} owner=root group=root mode=644
+        when: sublime_apt_exists.rc == 1
+
+      - name: 17. Update apt cache
         apt: update_cache=yes
         when: sublime_apt_exists.rc == 1
 
-      - name: Update apt cache
+      - name: 18. Update apt cache
         apt: update_cache=yes
         when: google_apt_exists.rc == 1
 
-      - name: Install Sublime Chrome
+      - name: 19. Install Sublime Chrome
         apt: pkg=sublime-text state=installed
 
-      - name: Add VS Code Keys
+      - name: 20. Add VS Code Keys
         apt_key:
           url: "https://packages.microsoft.com/keys/microsoft.asc"
           state: present
 
-      - name: Add VS Code Repo
+      - name: 21 .Add VS Code Repo
         apt_repository:
           repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'
           filename: vscode
           state: present
           update_cache: yes
 
-      - name: Install VS Code
+      - name: 22. Install VS Code
         apt:
           name: code
           update_cache: true

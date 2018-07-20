@@ -1,8 +1,11 @@
 ---
-
+# make sure you set all the variables right in the vars.yml file before
+# running this script
+# Author: Jitendra A. Varma (https://github.com/jitendravarma)
+# Company: Fafadiatech (www.fafadiatech.com)
 -   name: Setup and Configure Solr
     hosts: "{{host_name}}"
-    user: "{{host_name}}"
+    user: "{{user_name}}"
     pre_tasks:
         -   name: 'Install python2' #from ubuntu 16.0.0 onwards python 2 is absent
             raw: sudo apt-get -y install python-simplejson
@@ -12,14 +15,14 @@
             shell: "whoami"
             register: user_name
 
-    vars_files: 
+    vars_files:
         - "../vars/main.yml"
 
     gather_facts: true
 
     tasks:
         -   name: Creating Code and Installs folder (1/14)
-            file: 
+            file:
                 path: "{{ base_dir }}"
                 state: directory
             with_items:
@@ -28,26 +31,26 @@
 
 
         -   name: Adding open Jdk repository... (2/14)
-            apt_repository: 
-                repo: '{{ open_jdk_ppa }}' 
+            apt_repository:
+                repo: '{{ open_jdk_ppa }}'
                 state: present
             become: true
 
 
         -   name: Installing Open JDk...  (3/14)
-            apt: 
-                name: "{{ item }}" 
-                state: installed 
-                force: yes 
-                update_cache: yes 
+            apt:
+                name: "{{ item }}"
+                state: installed
+                force: yes
+                update_cache: yes
                 cache_valid_time: 3600
             when: ansible_os_family == 'Debian'
             with_items: "{{ packages }}"
             become: true
 
         -   name: Making Java directory.. (4/14)
-            file: 
-                path: "{{ item }}" 
+            file:
+                path: "{{ item }}"
                 state: directory
             with_items: "{{directory_path}}"
             become: true
@@ -55,7 +58,7 @@
         -   name: Creating symbolic link... (5/14)
             ignore_errors: true
             action: "{{ link_solr }}"
-            become: true    
+            become: true
 
         -   name: Downloading solr and extracting it... (6/14)
             unarchive:
@@ -66,7 +69,7 @@
 
         -   name: Copying solr file... (7/14)
             action: "shell {{ solr_copy_command}}"
-            become: true 
+            become: true
 
         -   name: Copying jetty config on remote... (8/14)
             copy:
@@ -107,7 +110,7 @@
 
         -   name: Copying start.ini file... (14/14)
             copy:
-                src: "{{ jetty_startini }}"
+                src: "{{jetty_startini}}"
                 dest: "/opt/solr/example/"
                 owner: root
                 group: root

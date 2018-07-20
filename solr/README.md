@@ -8,14 +8,14 @@ Following instructions will help you guide for the necessary steps for installat
 
 ### Prerequisites
 
-You will need to install Ansible in order to run the play. For ubuntu/iOS we will be using pip since it will go with both. You can still install Ansible using the system package.
+You will need to install Ansible in order to run the play. For Ubuntu/iOS we will be using pip since it will go with both. You can still install Ansible using the system package.
 
 ### Installing
 
 Using pip
 
 ```
-sudo apt-get install python-pip #to install pip 
+sudo apt-get install python-pip #to install pip
 ```
 The standard that I follow is I create seprate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
 
@@ -31,10 +31,10 @@ sudo mkdir /etc/ansible
 sudo touch /etc/ansible/ansible.cfg
 sudo touch /etc/ansible/hosts
 ```
-######  Note: If you are a iOS user then pip is the preferred method.   
-If you prefer not to use pip and want to you system packages then, you can install with, 
+######  Note: If you are a iOS user then pip is the preferred method.
+If you prefer not to use pip and want to you system packages then, you can install with,
 ```
-sudo apt-get install ansible 
+sudo apt-get install ansible
 ```
 ###### Note: If you user apt-get to Install Ansible then you will by default have ansible.cfg and hosts file in /etc/ansible/ directory
 Thats it. We are done with the installation part of the Ansible.
@@ -72,9 +72,9 @@ If you havent created your own private keys create using the following command a
 ssh-keygen -t rsa
 ```
 
-Copy your private key in the .ssh directory ie id_rsa.pub file, if default path is selected then it will be in 
+Copy your private key in the .ssh directory ie id_rsa.pub file, if default path is selected then it will be in
 ```
-cat ~/.ssh/id_rsa.pub 
+cat ~/.ssh/id_rsa.pub
 ```
 Paste the same in the your ansible Hosts in authorized_keys, it wont be created by default
 On every host,
@@ -84,14 +84,14 @@ nano ~/.ssh/authorized_keys
 ```
 ## Running the Play
 
-After all this hustle, we are finally ready to run the play, go to taks directory in the playbook 
+After all this hustle, we are finally ready to run the play, go to tasks directory in the playbook
 ```
-ansible-playbook -v main.yml --extra-vars "solr_version=4.10.2 host_name=server_name"
+ansible-playbook -v main.yml --extra-vars "solr_version=4.10.2 host_name=server_name user_name=user_name"
 ```
-The good reason to put extra vars it that we can change the version for Solr 
+The good reason to put extra vars it that we can change the version for Solr
 and host on the go whenever we want.
 
-Thats it. Tried and tested on version 9 and 8. For now it wont suppoert 10 as the installation steps are quite different.
+Thats it. Tried and tested on version 9 and 8. For now it won't support 10 as the installation steps are quite different.
 
 
 ## Built With
@@ -115,4 +115,4 @@ This project is licensed under the standard MIT License
 
 ## Acknowledgments
 
-* Thanks to [Yogesh Panchal](https://github.com/yspanchal) and [Sidharth Shah](https://github.com/sidharthshah) for their support
+* Thanks to [Yogesh Panchal](https://github.com/yspanchal) and [Sidharth Shah](https://github.com/sidharthshah) for their expertise

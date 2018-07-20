@@ -25,6 +25,8 @@ build_dependencies:
 
 # python depencies to be installed
 python_dependencies:
+  - virtualenv
+  - virtualenvwrapper
   - python-pip
   - python-mysqldb
   - python-simplejson
