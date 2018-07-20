@@ -17,7 +17,7 @@ Using pip
 ```
 sudo apt-get install python-pip #to install pip
 ```
-The standard that I follow is I create seprate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
+The standard that I follow is I create separate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
 
 So create Installs directory in your home directory. Then in Installs create envs, for pip virtual environments. Then create virtual env with in your env directory with,
 You can read more about [pip](https://pip.pypa.io/en/stable/reference/pip_download/)
@@ -39,7 +39,7 @@ sudo apt-get install ansible
 ###### Note: If you user apt-get to Install Ansible then you will by default have ansible.cfg and hosts file in /etc/ansible/ directory
 Thats it. We are done with the installation part of the Ansible.
 
-Edit ansible.cfg with the following paramaters
+Edit ansible.cfg with the following parameters
 ```
 [defaults]
 
@@ -67,7 +67,7 @@ server_ip or ips
 ```
 
 ## Creating your own SSH keys
-If you havent created your own private keys create using the following command and select the directories to save it in or skip to stick with deafault. Similarly you need to do on the server if not created.
+If you haven't created your own private keys create using the following command and select the directories to save it in or skip to stick with default. Similarly you need to do on the server if not created.
 ```
 ssh-keygen -t rsa
 ```
@@ -102,7 +102,6 @@ Thats it. Tried and tested on version 9 and 8. For now it won't support 10 as th
 ## Contributing
 
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
 
 ## Authors
 
