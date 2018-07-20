@@ -1,0 +1,31 @@
+---
+# vars file for ubuntu-setup
+
+# set chrome apt
+chrome_apt_file: /etc/apt/sources.list.d/google-chrome.list
+
+# set sublime apt
+sublime_apt_file: /etc/apt/sources.list.d/sublime-text.list
+
+# set mysql password
+mysql_password: "your_sql_password"
+
+# general build dependency
+build_dependencies:
+  - build-essential
+  - mysql-server
+  - mysql-client
+  - libffi-dev
+  - libssl-dev
+  - libmysqlclient-dev
+  - sqlite3
+  - git
+  - net-tools
+  - gcc
+
+# python depencies to be installed
+python_dependencies:
+  - python-pip
+  - python-mysqldb
+  - python-simplejson
+  - python-dev
