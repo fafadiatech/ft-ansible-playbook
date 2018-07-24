@@ -7,27 +7,78 @@ chrome_apt_file: /etc/apt/sources.list.d/google-chrome.list
 # set sublime apt
 sublime_apt_file: /etc/apt/sources.list.d/sublime-text.list
 
-# set mysql password
-mysql_password: "your_sql_password"
-
 # general build dependency
 build_dependencies:
-  - build-essential
-  - mysql-server
-  - mysql-client
+  - git
+  - gcc
+  - openssl
+  - libtool
+  - sqlite3
+  - libgle3
+  - autoconf
+  - libpq-dev
+  - net-tools
+  - libqtgui4
   - libffi-dev
   - libssl-dev
+  - zlib1g-dev
+  - libqt4-xml
+  - pkg-config
+  - libqtcore4
+  - libqt4-test
+  - libxml2-dev
+  - libblas-dev
+  - libqt4-dbus
+  - mysql-client
+  - qt4-designer
+  - mysql-server
+  - libsasl2-dev
+  - libldap2-dev
+  - libxslt1-dev
+  - libqt4-script
+  - qt4-dev-tools
+  - libqt4-network
+  - libasound2-dev
+  - build-essential
+  - libatlas-base-dev
   - libmysqlclient-dev
-  - sqlite3
-  - git
-  - net-tools
-  - gcc
 
 # python depencies to be installed
 python_dependencies:
-  - virtualenv
-  - virtualenvwrapper
+  - python-tz
+  - python-zsi
+  - python-qt4
   - python-pip
-  - python-mysqldb
-  - python-simplejson
   - python-dev
+  - python-xlwt
+  - python-yaml
+  - python-ldap
+  - python-lxml
+  - python-mako
+  - python-mock
+  - python-gdata
+  - python-pydot
+  - python-pyrex
+  - python-webdav
+  - python-psutil
+  - python-qt4-gl
+  - python-opengl
+  - python-jinja2
+  - python-openid
+  - idle-python2.7
+  - python-mysqldb
+  - python-pychart
+  - python-vobject
+  - python-werkzeug
+  - python-dateutil
+  - python-docutils
+  - python-libxslt1
+  - python-psycopg2
+  - python-pyparsing
+  - python-reportlab
+  - python-unittest2
+  - python-vatnumber
+  - python-simplejson
+  - python-feedparser
+  - virtualenvwrapper
+  - python-pyside.qtopengl

@@ -93,7 +93,7 @@ nano ~/.ssh/authorized_keys
 
 After all this hustle, we are finally ready to run the play, go to taks directory in the playbook
 ```
-ansible-playbook -v main.yml --extra-vars "user_name=user_name host_name=server_name"
+ansible-playbook -v main.yml --extra-vars "user_name=user_name host_name=server_name mysql_password=your_mysql_password"
 ```
 The good reason to put extra vars it that we can change the user name
 and host on the go whenever we want.
