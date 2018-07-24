@@ -3,7 +3,7 @@
 
 vars_file: "../vars/main.yml"
 
-base_dir: /home/{{ user_name.stdout }}/{{ item }} 
+base_dir: /home/{{user_name}}/{{item}}
 
 packages:
     -   openjdk-7-jdk
@@ -16,15 +16,15 @@ solr_url: http://archive.apache.org/dist/lucene/solr/{{solr_version}}/solr-{{sol
 
 solr_file_name: "solr-{{solr_version}}"
 
-solr_extract_path: /home/{{ user_name.stdout }}/Installs/
+solr_extract_path: /home/{{user_name}}/Installs/
 
-solr_copy_path: /home/{{ user_name.stdout }}/Installs/{{ solr_file_name }}/*
+solr_copy_path: /home/{{user_name}}/Installs/{{solr_file_name}}/*
 
 link_solr : shell sudo ln -s /usr/lib/jvm/java-7-openjdk-amd64 /usr/java/default
 
 open_jdk_ppa: ppa:openjdk-r/ppa
 
-solr_copy_command: sudo cp -r {{ solr_copy_path }} /opt/solr/
+solr_copy_command: sudo cp -r {{solr_copy_path}} /opt/solr/
 
 jetty_path: ../templates/jetty
 

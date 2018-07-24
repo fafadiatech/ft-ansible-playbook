@@ -1,10 +1,17 @@
-# Ansible script for Odoo
+# Ansible script for setting up basic Ubuntu services
 
-Let's automate the installation of odoo with the help of very simple Ansible script. This playbook will help you to install Odoo (8.0, 9.0).(https://www.odoo.com/page/odoo-9).
+Being a DevOps at Fafadiatech, I have noticed on the reqular that I have to install Ubuntu every now and then. And after installing we have to get the system back to our core application so our Develpers can carry their work. So in order to save time and tedious task, I have written this Ansible script.
+
+## This Script will install
+1. MySql
+2. Chrome
+3. Sublime
+4. VS Code
+5. pip, virtual-env, python-dev, buid-essentials and few more core dependencies
 
 ## Getting Started
 
-Following instructions will help you guide for the necessary steps for installation. Just clone the repository
+Following instructions will help you guide for the necessary steps for installation. Just clone the repo.
 
 ### Prerequisites
 
@@ -17,7 +24,7 @@ Using pip
 ```
 sudo apt-get install python-pip #to install pip
 ```
-The standard that I follow is I create separate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
+The standard that I follow is I create seprate folder for Codes and Installs. As it makes more sense to segregate Code and Installation files
 
 So create Installs directory in your home directory. Then in Installs create envs, for pip virtual environments. Then create virtual env with in your env directory with,
 You can read more about [pip](https://pip.pypa.io/en/stable/reference/pip_download/)
@@ -39,7 +46,7 @@ sudo apt-get install ansible
 ###### Note: If you user apt-get to Install Ansible then you will by default have ansible.cfg and hosts file in /etc/ansible/ directory
 Thats it. We are done with the installation part of the Ansible.
 
-Edit ansible.cfg with the following parameters
+Edit ansible.cfg with the following paramaters
 ```
 [defaults]
 
@@ -67,7 +74,7 @@ server_ip or ips
 ```
 
 ## Creating your own SSH keys
-If you haven't created your own private keys create using the following command and select the directories to save it in or skip to stick with default. Similarly you need to do on the server if not created.
+If you havent created your own private keys create using the following command and select the directories to save it in or skip to stick with deafault. Similarly you need to do on the server if not created.
 ```
 ssh-keygen -t rsa
 ```
@@ -86,10 +93,12 @@ nano ~/.ssh/authorized_keys
 
 After all this hustle, we are finally ready to run the play, go to taks directory in the playbook
 ```
-ansible-playbook -v main.yml --extra-vars "odoo_version=9.0 host_name=your_server_name user_name=your_user_name"
+ansible-playbook -v main.yml --extra-vars "user_name=user_name host_name=server_name mysql_password=your_mysql_password"
 ```
-The good reason to put extra vars it that we can change the version for Odoo(below 10) and host on the go whenever we want.
-Thats it. Tried and tested on version 9 and 8. For now it wont support 10 as the installation steps are quite different.
+The good reason to put extra vars it that we can change the user name
+and host on the go whenever we want.
+
+Thats it.
 
 
 ## Built With
@@ -102,10 +111,9 @@ Thats it. Tried and tested on version 9 and 8. For now it wont support 10 as the
 Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
 
 
-
 ## Authors
 
-* **Jitendra Varma** - DevOps at  - [Fafadia Tech](https://fafadiatech.com/)
+* **Jitendra Varma** - DevOps at  - [Fafadiatech](https://fafadiatech.com/)
 
 
 ## License

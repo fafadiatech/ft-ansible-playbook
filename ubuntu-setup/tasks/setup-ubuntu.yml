@@ -1,0 +1,139 @@
+---
+# this script will install Sublime Text 3, Chrome, Visual Studio Code, Mysql
+# and basic python dependencies. Make sure you edit mysql password in vars.yml
+# before running this script
+# Author: Jitendra A. Varma (https://github.com/jitendravarma)
+# Company: Fafadiatech (www.fafadiatech.com)
+
+- name: Installing basic dependencies in Ubuntu
+  hosts: "{{host_name}}"
+  user: "{{user_name}}"
+  sudo: true
+
+  vars_files:
+    - "../vars/main.yml"
+
+  pre_tasks:
+    - name: 'install python2'
+      raw: sudo apt-get -y install python-simplejson
+
+  gather_facts: false
+
+  tasks:
+      # set mysql password for questioning
+      - name: 1. Set MySQL root password before installing (1/25)
+        debconf: name='mysql-server' question='mysql-server/root_password' value={{mysql_password}} vtype="password"
+
+      # when prompted set mysql password
+      - name: 2. Confirm MySQL root password before installing (2/25)
+        debconf: name='mysql-server' question='mysql-server/root_password_again' value={{mysql_password}} vtype='password'
+
+      # install these basic dependencies
+      - name: 3. Installing dependencies (3/25)
+        apt: name="{{item}}" state=installed force=yes update_cache=yes cache_valid_time=3600
+        with_items: "{{ python_dependencies + build_dependencies}}"
+
+      # make mysql secure by deleting default users
+      - name: 4. Deleting anonymous MySQL server user for localhost (4/25)
+        mysql_user: user="" state=absent login_password={{mysql_password}} login_user=root
+
+      # securing my sql to run locally only
+      - name: 5. Securing the MySQL root user (5/25)
+        mysql_user: user="" password={{mysql_password}} host='{{item}}' login_password={{mysql_password}} login_user=root
+        with_items:
+          - 127.0.0.1
+          - localhost
+          - ::1
+
+      # remove default database
+      - name: 6. Removing the MySQL test database (6/25)
+        mysql_db: db=test state=absent login_password={{mysql_password}} login_user=root
+
+      # create Installs and Code our standard directory
+      - name: 7. Creating Code and Installs folder (7/25)
+        file: path=/home/{{ user_name }}/{{item}} state=directory
+        sudo: false
+        with_items:
+          - Code
+          - Installs
+          - Installs/env
+
+      # check if chrome is already installed or nah and register it
+      - name: 8. Does the Google apt file exist? (8/25)
+        command: test -f {{chrome_apt_file}}
+        register: google_apt_exists
+        ignore_errors: True
+
+      # add chrome keys if not installed
+      - name: 9. Add Google Chrome key (9/25)
+        shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+        when: google_apt_exists.rc == 1
+
+      - name: 10. Add Google Chrome repo (10/25)
+        copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest={{chrome_apt_file}} owner=root group=root mode=644
+        when: google_apt_exists.rc == 1
+
+      - name: 11. Update apt cache (11/25)
+        apt: update_cache=yes
+        when: google_apt_exists.rc == 1
+
+      - name: 12. Install Google Chrome (12/25)
+        apt: pkg=google-chrome-stable state=installed
+
+      # check if the sublime is installed or nah
+      - name: 13. Does the Sublime apt file exist? (13/25)
+        command: test -f {{sublime_apt_file}}
+        register: sublime_apt_exists
+        ignore_errors: True
+
+      # add the keys if not present
+      - name: 14. Add sublime key (14/25)
+        shell: wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
+        when: sublime_apt_exists.rc == 1
+
+      - name: 15. Add sublime repo (15/25)
+        copy: content="deb https://download.sublimetext.com/ apt/stable/" dest={{sublime_apt_file}} owner=root group=root mode=644
+        when: sublime_apt_exists.rc == 1
+
+      - name: 16. Update apt cache (16/25)
+        apt: update_cache=yes
+        when: sublime_apt_exists.rc == 1
+
+      - name: 17. Update apt cache (17/25)
+        apt: update_cache=yes
+        when: google_apt_exists.rc == 1
+
+      - name: 18. Install Sublime Chrome (18/25)
+        apt: pkg=sublime-text state=installed
+
+      - name: 19. Add VS Code Keys (19/25)
+        apt_key:
+          url: "https://packages.microsoft.com/keys/microsoft.asc"
+          state: present
+
+      - name: 20. Add VS Code Repo (20/25)
+        apt_repository:
+          repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'
+          filename: vscode
+          state: present
+          update_cache: yes
+
+      - name: 21. Install VS Code (21/25)
+        apt:
+          name: code
+          update_cache: true
+
+      - name: 22. Find virtualenv wrapper location (22/25)
+        command: sudo pip install virtualenvwrapper
+
+      # add environment path in bashrc
+      - name: 23. Set workon home path in bashrc (23/25)
+        shell: echo "export WORKON_HOME=/home/{{user_name}}/Installs/env" >> /home/{{user_name}}/.bashrc
+        ignore_errors: True
+
+      - name: 24. Find virtualenv wrapper location (24/25)
+        action: shell which virtualenvwrapper.sh
+        register: virtualenvwrapper_path
+
+      - name: 25. Set virtualenv wrapper path in bashrc (25/25)
+        shell: echo "source {{virtualenvwrapper_path.stdout}}" >> /home/{{user_name}}/.bashrc

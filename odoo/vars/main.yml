@@ -2,7 +2,7 @@
 
 #vars file for odoo
 
-base_dir: /home/{{ user_name.stdout }}/{{ item }}
+base_dir: /home/{{user_name}}/{{item}}
 
 create_odoo_user: sudo adduser --system --quiet --shell=/bin/bash --home=/opt/odoo --gecos 'odoo' --group odoo
 
@@ -22,11 +22,11 @@ base_folder:
 odoo_dirs:
     -   envs
     -   envs/
-    -   envs/{{ env_name }}/etc
+    -   envs/{{env_name}}/etc
     -   logs
     -   logs/supervisor
 
-copy_odoo_files: cp -r /home/{{ user_name.stdout }}/Code/odoo /opt/odoo/
+copy_odoo_files: cp -r /home/{{user_name}}/Code/odoo /opt/odoo/
 
 odoo_log_files:
     -   odoo-access.log
