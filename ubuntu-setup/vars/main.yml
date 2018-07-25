@@ -80,5 +80,4 @@ python_dependencies:
   - python-vatnumber
   - python-simplejson
   - python-feedparser
-  - virtualenvwrapper
   - python-pyside.qtopengl

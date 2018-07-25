@@ -21,24 +21,24 @@
 
   tasks:
       # set mysql password for questioning
-      - name: 1. Set MySQL root password before installing (1/25)
+      - name: 1. Set MySQL root password before installing (1/29)
         debconf: name='mysql-server' question='mysql-server/root_password' value={{mysql_password}} vtype="password"
 
       # when prompted set mysql password
-      - name: 2. Confirm MySQL root password before installing (2/25)
+      - name: 2. Confirm MySQL root password before installing (2/29)
         debconf: name='mysql-server' question='mysql-server/root_password_again' value={{mysql_password}} vtype='password'
 
       # install these basic dependencies
-      - name: 3. Installing dependencies (3/25)
+      - name: 3. Installing dependencies (3/29)
         apt: name="{{item}}" state=installed force=yes update_cache=yes cache_valid_time=3600
         with_items: "{{ python_dependencies + build_dependencies}}"
 
       # make mysql secure by deleting default users
-      - name: 4. Deleting anonymous MySQL server user for localhost (4/25)
+      - name: 4. Deleting anonymous MySQL server user for localhost (4/29)
         mysql_user: user="" state=absent login_password={{mysql_password}} login_user=root
 
       # securing my sql to run locally only
-      - name: 5. Securing the MySQL root user (5/25)
+      - name: 5. Securing the MySQL root user (5/29)
         mysql_user: user="" password={{mysql_password}} host='{{item}}' login_password={{mysql_password}} login_user=root
         with_items:
           - 127.0.0.1
@@ -46,94 +46,114 @@
           - ::1
 
       # remove default database
-      - name: 6. Removing the MySQL test database (6/25)
+      - name: 6. Removing the MySQL test database (6/29)
         mysql_db: db=test state=absent login_password={{mysql_password}} login_user=root
 
       # create Installs and Code our standard directory
-      - name: 7. Creating Code and Installs folder (7/25)
-        file: path=/home/{{ user_name }}/{{item}} state=directory
-        sudo: false
+      - name: 7. Creating Code and Installs folder (7/29)
+        file: path=/home/{{user_name}}/{{item}} state=directory owner={{user_name}} mode=u=rwX,g=rX,o=rX recurse=yes group={{user_name}}
         with_items:
           - Code
           - Installs
           - Installs/env
 
       # check if chrome is already installed or nah and register it
-      - name: 8. Does the Google apt file exist? (8/25)
+      - name: 8. Does the Google apt file exist? (8/29)
         command: test -f {{chrome_apt_file}}
         register: google_apt_exists
         ignore_errors: True
 
       # add chrome keys if not installed
-      - name: 9. Add Google Chrome key (9/25)
+      - name: 9. Add Google Chrome key (9/29)
         shell: wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
         when: google_apt_exists.rc == 1
 
-      - name: 10. Add Google Chrome repo (10/25)
+      - name: 10. Add Google Chrome repo (10/29)
         copy: content="deb http://dl.google.com/linux/chrome/deb/ stable main" dest={{chrome_apt_file}} owner=root group=root mode=644
         when: google_apt_exists.rc == 1
 
-      - name: 11. Update apt cache (11/25)
+      - name: 11. Update apt cache (11/29)
         apt: update_cache=yes
         when: google_apt_exists.rc == 1
 
-      - name: 12. Install Google Chrome (12/25)
+      - name: 12. Install Google Chrome (12/29)
         apt: pkg=google-chrome-stable state=installed
 
       # check if the sublime is installed or nah
-      - name: 13. Does the Sublime apt file exist? (13/25)
+      - name: 13. Does the Sublime apt file exist? (13/29)
         command: test -f {{sublime_apt_file}}
         register: sublime_apt_exists
         ignore_errors: True
 
       # add the keys if not present
-      - name: 14. Add sublime key (14/25)
+      - name: 14. Add sublime key (14/29)
         shell: wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo apt-key add -
         when: sublime_apt_exists.rc == 1
 
-      - name: 15. Add sublime repo (15/25)
+      - name: 15. Add sublime repo (15/29)
         copy: content="deb https://download.sublimetext.com/ apt/stable/" dest={{sublime_apt_file}} owner=root group=root mode=644
         when: sublime_apt_exists.rc == 1
 
-      - name: 16. Update apt cache (16/25)
+      - name: 16. Update apt cache (16/29)
         apt: update_cache=yes
         when: sublime_apt_exists.rc == 1
 
-      - name: 17. Update apt cache (17/25)
+      - name: 17. Update apt cache (17/29)
         apt: update_cache=yes
         when: google_apt_exists.rc == 1
 
-      - name: 18. Install Sublime Chrome (18/25)
+      - name: 18. Install Sublime Chrome (18/29)
         apt: pkg=sublime-text state=installed
 
-      - name: 19. Add VS Code Keys (19/25)
+      - name: 19. Add VS Code Keys (19/29)
         apt_key:
           url: "https://packages.microsoft.com/keys/microsoft.asc"
           state: present
 
-      - name: 20. Add VS Code Repo (20/25)
+      - name: 20. Add VS Code Repo (20/29)
         apt_repository:
           repo: 'deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main'
           filename: vscode
           state: present
           update_cache: yes
 
-      - name: 21. Install VS Code (21/25)
+      - name: 21. Install VS Code (21/29)
         apt:
           name: code
           update_cache: true
 
-      - name: 22. Find virtualenv wrapper location (22/25)
+      - name: 22. Find virtualenv wrapper location (22/29)
         command: sudo pip install virtualenvwrapper
 
       # add environment path in bashrc
-      - name: 23. Set workon home path in bashrc (23/25)
+      - name: 23. Set workon home path in bashrc (23/29)
         shell: echo "export WORKON_HOME=/home/{{user_name}}/Installs/env" >> /home/{{user_name}}/.bashrc
         ignore_errors: True
 
-      - name: 24. Find virtualenv wrapper location (24/25)
+      - name: 24. Find virtualenv wrapper location (24/29)
         action: shell which virtualenvwrapper.sh
         register: virtualenvwrapper_path
 
-      - name: 25. Set virtualenv wrapper path in bashrc (25/25)
+      - name: 25. Set virtualenv wrapper path in bashrc (25/29)
         shell: echo "source {{virtualenvwrapper_path.stdout}}" >> /home/{{user_name}}/.bashrc
+
+      - name: 26. Add HipChat repo (26/29)
+        shell: sudo sh -c 'echo "deb https://atlassian.artifactoryonline.com/atlassian/hipchat-apt-client xenial main" > /etc/apt/sources.list.d/atlassian-hipchat4.list'
+
+      - name: 27. Add HipChat keys (27/29)
+        shell: wget -O - https://atlassian.artifactoryonline.com/atlassian/api/gpg/key/public | sudo apt-key add -
+        update_cache: yes
+
+      - name: 28. Install HipChat4 (28/29)
+        apt:
+          name: hipchat4
+          update_cache: yes
+
+      - name: 29. Make symbolic links (29/29)
+        command: "{{ item }}"
+        with_items:
+          - "sudo rm /opt/HipChat4/lib/libcrypto.so*"
+          - "sudo ln -s /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 /opt/HipChat4/lib/libcrypto.so.1.0.0"
+          - "sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/HipChat4/lib/libssl.so.1.0.0"
+          - "sudo ln -s /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 /opt/HipChat4/lib/libssl.so"
+        ignore_errors: True
